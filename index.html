@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#500000" />
+  <meta name="description" content="HackFlow — event-aware indoor route comparison from one 90-row estimated congestion dataset and the TAMU Datathon hall sketch." />
+  <title>HackFlow — TAMU Datathon</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="HackFlow home"><span class="brandmark">H<span>↗</span></span><span class="brandtype"><strong>HackFlow</strong><small>TAMU Datathon · November 7–8, 2026</small></span></a>
+      <nav class="topnav"><a href="#map-section">Explore map</a><a href="#about-section">How predictions work</a></nav>
+      <span class="project-pill"><span class="dot"></span> Floor plan mapped · 15 aisles</span>
+    </div>
+  </header>
+  <div class="container" id="top">
+    <section class="hero">
+      <div class="hero-copy"><p class="eyebrow">THE DATATHON IS YOUR DATASET</p><h1>Get there. <em>Skip the crowds.</em></h1><p>An indoor navigator for the TAMU Datathon hall. HackFlow uses one 90-row dataset to forecast congestion for six event periods and compare a direct route against a less-crowded alternative.</p><div class="hero-links"><a class="primary-btn" href="#map-section">Plan a route <span aria-hidden="true">→</span></a><a class="ghost-btn" href="#about-section">How it predicts</a></div></div>
+      <div class="hero-metrics"><div><strong>15</strong><span>Mapped aisle sections</span></div><div><strong id="recordCount">90</strong><span>Modeled aisle records</span></div><div><strong>6</strong><span>Event periods</span></div></div>
+    </section>
+    <section class="source-banner" role="note"><span class="source-symbol">i</span><span><strong>Event-aware estimates.</strong> One workbook, 90 records, 15 aisles, six periods. Numerical crossing counts are estimates rather than measured live traffic.</span><span class="source-tag" id="modeBadge">90-ROW MODEL</span></section>
+    <section id="map-section" class="workspace">
+      <aside class="controls card">
+        <div class="panel-heading"><span class="step">01</span><div><h2>Find your route</h2><p>Detects event time automatically</p></div></div>
+        <label for="start">Your starting section</label><select id="start"></select>
+        <label for="destination">Destination</label><select id="destination"></select>
+        <div class="live-clock" role="status" aria-live="off"><span class="live-clock-dot" aria-hidden="true"></span><div><strong id="liveClock">Checking College Station time…</strong><small id="clockStatus">Matching the Datathon schedule</small></div></div>
+        <label for="timeMode">Time selection</label><select id="timeMode"><option value="auto">Automatic — current time</option><option value="manual">Manual — replay an event</option></select>
+        <label for="event">Event / time period</label><select id="event" disabled></select>
+        <p id="timeModeNote" class="time-mode-note">Automatically chooses the latest relevant event period. Changes when the schedule changes.</p>
+        <button id="routeButton" class="primary-btn full">Compare routes <span>→</span></button>
+        <div id="sourceExplanation" class="context-note" aria-live="polite"></div>
+        <div class="quick-legend"><p class="subheading">Congestion key</p><div><span class="legend-dot high"></span>Predicted busy</div><div><span class="legend-dot medium"></span>Relatively busy</div><div><span class="legend-dot clear"></span>Likely spacious</div><div><span class="legend-dot unknown"></span>Uncertain</div></div>
+      </aside>
+      <section class="map-panel card" aria-label="Interactive hall map">
+        <div class="section-top"><div><p class="eyebrow dark">INTERACTIVE HALL EXPLORER</p><h2>Interactive floor plan</h2><p>Tap an aisle to choose your start. Colors reflect the workbook estimates for the current event period.</p></div><div class="map-key"><span><i class="line-key quickest"></i> Shortest</span><span><i class="line-key quieter"></i> Less congested</span></div></div>
+        <div class="map-scroll"><svg id="hallMap" viewBox="0 0 1200 590" role="img" aria-label="Schematic of hackathon hall with two columns of four table blocks, numbered walkways, exits, snack area, washroom, sponsor booths, and stage"></svg></div>
+        <div class="map-bottom"><span id="mapAnnotation">Original layout redrawn from the team's hall sketch; not to scale.</span><button id="resetMap" class="text-button">Reset routes</button></div>
+        <div class="route-results" id="routeResults"><div class="route-card"><span class="route-kicker"><i class="route-icon shortest"></i> Shortest walk</span><strong id="shortestTitle">—</strong><p id="shortestDetail">Select a destination to compare routes.</p><small id="shortestPath"></small></div><div class="route-card emphasis"><span class="route-kicker"><i class="route-icon calmer"></i> Lower congestion</span><strong id="calmerTitle">—</strong><p id="calmerDetail">Based on the 90-row workbook.</p><small id="calmerPath"></small></div></div>
+      </section>
+      <aside class="insights card">
+        <div class="panel-heading"><span class="step">02</span><div><h2>Event timeline</h2><p>Six periods · Saturday through Sunday breakfast</p></div></div>
+        <div class="event-list" id="eventList" role="list"></div>
+        <div class="insight-note"><strong>What's based on evidence?</strong><p id="evidenceText">Estimates for each event period come directly from the workbook.</p></div>
+      </aside>
+    </section>
+    <section id="about-section" class="method-grid">
+      <div>
+        <p class="eyebrow dark">ONE WORKBOOK · SIX EVENT PERIODS</p>
+        <h2>Plan a route from event-based congestion estimates.</h2>
+        <p>HackFlow reads its modeled congestion values from <strong>one 90-row dataset</strong>: 15 aisle sections for each of six event periods. Every record contains the period, aisle section, assigned team member, estimated pedestrian crossings per minute, and estimated congestion level.</p>
+        <p>The local College Station clock automatically picks the corresponding event scenario. A weighted route algorithm then compares the shortest schematic path with a path that reduces exposure to high estimated pedestrian traffic.</p>
+        <p><strong>Limitations:</strong> Crossing numbers are modeled estimates, not verified pedestrian counts. This is a rule-based scenario tool, not a live crowd sensor, measured travel-time predictor, or emergency navigation system. The floor plan is not to scale.</p>
+        <p><a class="dataset-link" href="data/HackFlow_90_Simple_Data_Clean_Header.xlsx" download>View the one-sheet Excel dataset →</a></p>
+      </div>
+      <div class="method-steps">
+        <div><span>01</span><p><strong>Dataset</strong><br/>90 estimated aisle records · Rohit, Durgesh &amp; Aditya</p></div>
+        <div><span>02</span><p><strong>Event match</strong><br/>Local clock picks one of six scenarios</p></div>
+        <div><span>03</span><p><strong>Compare</strong><br/>Direct and lower-congestion routing</p></div>
+      </div>
+    </section>
+    <footer><strong>HackFlow</strong><span>Built for TAMU Datathon · Rohit, Durgesh &amp; Aditya</span><span>Original sketch supplied by the team · Not an emergency routing system</span></footer>
+  </div>
+  <script src="data.js"></script><script src="app.js"></script>
+</body>
+</html>
